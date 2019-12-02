@@ -1,12 +1,8 @@
 module ShipComputer
   extend self
 
-  def stack_from_listing(listing)
-    listing.split(",").map(&:to_i)
-  end
-
   def execute_listing(listing)
-    stack = stack_from_listing(listing)
+    stack = listing.split(",").map(&:to_i)
     execute_stack stack
     stack.join(",")
   end
