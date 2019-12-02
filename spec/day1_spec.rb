@@ -18,42 +18,42 @@ RSpec.describe 'fuel requirements' do
   }
 
   specify "For a mass of 12, divide by 3 and round down to get 4, then subtract 2 to get 2." do
-    expect( Fuel.for_mass(12) ).to eq( 2 )
+    expect( Fuel.for_mass_simple(12) ).to eq( 2 )
   end
 
   specify "For a mass of 14, dividing by 3 and rounding down still yields 4, so the fuel required is also 2." do
-    expect( Fuel.for_mass(14) ).to eq( 2 )
+    expect( Fuel.for_mass_simple(14) ).to eq( 2 )
   end
 
   specify "For a mass of 1969, the fuel required is 654." do
-    expect( Fuel.for_mass(1969) ).to eq( 654 )
+    expect( Fuel.for_mass_simple(1969) ).to eq( 654 )
   end
 
   specify "For a mass of 100756, the fuel required is 33583." do
-    expect( Fuel.for_mass(100756) ).to eq( 33583 )
+    expect( Fuel.for_mass_simple(100756) ).to eq( 33583 )
   end
 
   specify "puzzle solution" do
-    fuels = module_weights.map { |e| Fuel.for_mass(e) }
+    fuels = module_weights.map { |e| Fuel.for_mass_simple(e) }
     total = fuels.inject(0, :+)
     # puts "\n\nTotal fuel required is: #{total}"
     expect( total ).to eq( 3563458 )
   end
 
   specify "A module of mass 14 requires 2 fuel. This fuel requires no further fuel (2 divided by 3 and rounded down is 0, which would call for a negative fuel), so the total fuel required is still just 2." do
-    expect( Fuel.for_mass_including_fuel(14) ).to eq( 2 )
+    expect( Fuel.for_mass(14) ).to eq( 2 )
   end
 
   specify "At first, a module of mass 1969 requires 654 fuel. Then, this fuel requires 216 more fuel (654 / 3 - 2). 216 then requires 70 more fuel, which requires 21 fuel, which requires 5 fuel, which requires no further fuel. So, the total fuel required for a module of mass 1969 is 654 + 216 + 70 + 21 + 5 = 966." do
-    expect( Fuel.for_mass_including_fuel(1969 ) ).to eq( 966 )
+    expect( Fuel.for_mass(1969 ) ).to eq( 966 )
   end
 
   specify "The fuel required by a module of mass 100756 and its fuel is: 33583 + 11192 + 3728 + 1240 + 411 + 135 + 43 + 12 + 2 = 50346." do
-    expect( Fuel.for_mass_including_fuel(100756) ).to eq( 50346 )
+    expect( Fuel.for_mass(100756) ).to eq( 50346 )
   end
 
   specify "puzzle solution" do
-    fuels = module_weights.map { |e| Fuel.for_mass_including_fuel(e) }
+    fuels = module_weights.map { |e| Fuel.for_mass(e) }
     total = fuels.inject(0, :+)
     # puts "\n\nACTUAL total fuel required is: #{total}"
     expect( total ).to eq( 5342292 )
