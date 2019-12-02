@@ -11,11 +11,17 @@ module ShipComputer
     pc = 0
 
     loop do
-      op, lft, rgt, dst = *stack[pc, 4]
-      case op
-      when 99 ; break
-      when 1  ; stack[dst] = stack[lft] + stack[rgt]
-      when 2  ; stack[dst] = stack[lft] * stack[rgt]
+      case stack[pc]
+      when 99
+        break
+      when 1
+        lft, rgt, dst = *stack[pc+1, 3]
+        a, b = stack[lft], stack[rgt]
+        stack[dst] = a + b
+      when 2
+        lft, rgt, dst = *stack[pc+1, 3]
+        a, b = stack[lft], stack[rgt]
+        stack[dst] = a * b
       end
       pc += 4
     end
