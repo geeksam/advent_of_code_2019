@@ -7,7 +7,7 @@ module Fuel
 
   def for_mass_including_fuel(m)
     total = 0
-    while true
+    loop do
       moar_fuel = for_mass(m)
       break if moar_fuel < 1
       total += moar_fuel
