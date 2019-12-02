@@ -5,7 +5,7 @@ module ShipComputer
     listing.split(",").map(&:to_i)
   end
 
-  def execute(listing)
+  def execute_listing(listing)
     stack = stack_from_listing(listing)
     execute_stack stack
     stack.join(",")
