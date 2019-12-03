@@ -12,6 +12,8 @@ module ShipComputer
 
     loop do
       case stack[pc]
+      when nil
+        fail "WTF?!"
       when 99
         break
       when 1
