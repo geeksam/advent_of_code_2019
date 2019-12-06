@@ -1,4 +1,3 @@
-
 class Path
   def self.from_string(path_string)
     new.tap do |path|
@@ -21,12 +20,19 @@ class Path
   end
 
   def points
-    list = []
-    vectors.each do |v|
-      tail = list.last || Origin
-      list.concat tail.points_along(v)
-    end
-    list.uniq
+    @_points ||=
+      begin
+        list = [Origin]
+        vectors.each do |v|
+          tail = list.last
+          list.concat tail.points_along(v)[1..-1]
+        end
+        list
+      end
+  end
+
+  def steps_to(point)
+    points.index(point)
   end
 
   def inspect
