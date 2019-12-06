@@ -3,9 +3,10 @@ class PasswordChecker
     new(candidate).ok?
   end
 
-  attr_reader :pw
+  attr_reader :pw, :digits
   def initialize(pw)
-    @pw = pw.to_s
+    @pw     = pw.to_s
+    @digits = @pw.split("").map(&:to_i)
   end
 
   def ok?
@@ -17,7 +18,7 @@ class PasswordChecker
   private
 
   def has_double?
-    !!( pw =~ /(\d)\1/ )
+    runs.include?(2)
   end
 
   def decreases?
@@ -27,9 +28,25 @@ class PasswordChecker
     false
   end
 
-  def digits
-    @_digits ||= pw.split("").map(&:to_i)
+  # wow, this is gross
+  def runs
+    @_runs ||=
+      begin
+        [].tap do |runs|
+          prev = nil
+          digits.each_cons(2) do |a, b|
+            if a == b
+              if prev.nil?
+                runs << 2
+                prev = a
+              else
+                runs[-1] += 1
+              end
+            else
+              prev = nil
+            end
+          end
+        end
+      end
   end
 end
-
-# range = 273025-767253
