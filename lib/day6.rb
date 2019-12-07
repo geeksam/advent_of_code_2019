@@ -10,11 +10,24 @@ class OrbitMap
     end
 
     def orbit_count
-      if in_orbit_around
-        in_orbit_around.orbit_count + 1
-      else
-        0
-      end
+      orbiting.length
+    end
+
+    def orbiting
+      @_orbiting ||=
+        if in_orbit_around
+          [ in_orbit_around ] + in_orbit_around.orbiting
+        else
+          []
+        end
+    end
+
+    def hops_to(object)
+      orbiting.index(object)
+    end
+
+    def inspect
+      "<#{name}>"
     end
   end
 
@@ -37,6 +50,12 @@ class OrbitMap
 
   def orbit_count
     @objects.values.inject(0) { |mem, obj| mem + obj.orbit_count }
+  end
+
+  def minimum_transfers(from:, to:)
+    a, b = object_named(from), object_named(to)
+    x = (a.orbiting & b.orbiting).first
+    a.hops_to(x) + b.hops_to(x)
   end
 
   private

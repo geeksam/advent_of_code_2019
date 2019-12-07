@@ -42,6 +42,35 @@ RSpec.describe 'orbital graphs' do
     end
   end
 
+  describe "orbital transfer count" do
+    let(:map) {
+      OrbitMap.new(<<~EOF.strip)
+        COM)B
+        B)C
+        C)D
+        D)E
+        E)F
+        B)G
+        G)H
+        D)I
+        E)J
+        J)K
+        K)L
+        K)YOU
+        I)SAN
+      EOF
+    }
+
+    specify "basic map stats" do
+      expect( map.object_count ).to eq( 14 )
+      expect( map.object_names ).to eq( %w[ COM B C D E F G H I J K L SAN YOU ].sort )
+    end
+
+    specify "four orbital transfers are required to get YOU to SAN" do
+      expect( map.minimum_transfers(from: "YOU", to: "SAN") ).to eq( 4 )
+    end
+  end
+
 	describe "actual puzzle" do
     let(:map_listing) { File.read( Pathname.new(File.dirname(__FILE__)).join("day6-part1.txt") ) }
     let(:map) { OrbitMap.new(map_listing) }
@@ -50,6 +79,12 @@ RSpec.describe 'orbital graphs' do
       # puts "", map.object_names.join(", ")
       # puts "", map.orbit_count
       expect( map.orbit_count ).to eq( 142915 )
+    end
+
+    specify "part two: orbital transfers" do
+      # puts "", map.object_names.join(", ")
+      # puts "", map.minimum_transfers(from: "YOU", to: "SAN")
+      expect( map.minimum_transfers(from: "YOU", to: "SAN") ).to eq( 283 )
     end
   end
 
