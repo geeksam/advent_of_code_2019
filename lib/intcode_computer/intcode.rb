@@ -1,22 +1,25 @@
 class IntcodeComputer
   class Intcode
-    def self.execute(stack, pc)
+    def self.execute(stack, pc, input, output)
       intcode = stack[pc]
       klass =
         case intcode
         when nil ; fail "WTF?!"
         when 1   ; Add
         when 2   ; Multiply
+        when 3   ; Input
+        when 4   ; Output
         when 99  ; Halt
         else     ; self
         end
-      klass.new(intcode, stack, pc).execute
+      klass.new(intcode, stack, pc, input, output).execute
     end
 
-    attr_reader :intcode, :stack, :pc
-    def initialize(intcode, stack, pc)
-      @intcode    = intcode
-      @stack, @pc = stack, pc
+    attr_reader :intcode, :stack, :pc, :input, :output
+    def initialize(intcode, stack, pc, input, output)
+      @intcode        = intcode
+      @stack, @pc     = stack, pc
+      @input, @output = input, output
     end
 
     def execute
@@ -61,6 +64,26 @@ class IntcodeComputer
     def exec
       a, b = stack[lft], stack[rgt]
       stack[dst] = a * b
+    end
+  end
+
+  class Input < Intcode
+    def exec
+      stack[pc+1] = input.shift
+    end
+
+    def instruction_length
+      2
+    end
+  end
+
+  class Output < Intcode
+    def exec
+      output << stack[pc+1]
+    end
+
+    def instruction_length
+      2
     end
   end
 end
