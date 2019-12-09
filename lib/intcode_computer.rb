@@ -6,6 +6,10 @@ class IntcodeComputer
     new(stack)
   end
 
+  def self.from_stack(stack)
+    new(stack)
+  end
+
   attr_reader :stack
   def initialize(stack)
     @stack = stack
