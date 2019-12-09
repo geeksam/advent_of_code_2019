@@ -7,8 +7,14 @@ RSpec.describe "IntcodeComputer, day five" do
   end
 
   specify "opcode 4 outputs the value of its only parameter" do
-    out = []
-    IntcodeComputer.execute_listing("4,42,99", output: out)
-    expect( out ).to eq( [42] )
+    output = []
+    IntcodeComputer.execute_listing("4,2,99", output: output)
+    expect( output ).to eq( [99] )
+  end
+
+  specify "example program for intcodes 3&4" do
+    io = { input: [42], output: [] }
+    IntcodeComputer.execute_listing("3,0,4,0,99", **io)
+    expect( io ).to eq( { input: [], output: [42] } )
   end
 end

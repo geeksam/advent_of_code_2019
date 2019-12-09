@@ -69,7 +69,8 @@ class IntcodeComputer
 
   class Input < Intcode
     def exec
-      stack[pc+1] = input.shift
+      ptr = stack[pc+1]
+      stack[ptr] = input.shift
     end
 
     def instruction_length
@@ -79,7 +80,8 @@ class IntcodeComputer
 
   class Output < Intcode
     def exec
-      output << stack[pc+1]
+      ptr = stack[pc+1]
+      output << stack[ptr]
     end
 
     def instruction_length
