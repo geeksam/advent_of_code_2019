@@ -1,4 +1,5 @@
 require_relative 'intcode_computer/intcode'
+require_relative 'intcode_computer/intcodes'
 
 class IntcodeComputer
   def self.execute_listing(listing, input: [], output: [])
