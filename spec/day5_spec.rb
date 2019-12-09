@@ -17,4 +17,8 @@ RSpec.describe "IntcodeComputer, day five" do
     IntcodeComputer.execute_listing("3,0,4,0,99", **io)
     expect( io ).to eq( { input: [], output: [42] } )
   end
+
+  specify "example program including parameter modes" do
+    expect( IntcodeComputer.execute_listing("1002,4,3,4,33") ).to eq( "1002,4,3,4,99" )
+  end
 end

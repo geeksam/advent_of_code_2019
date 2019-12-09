@@ -1,35 +1,37 @@
 class IntcodeComputer
   class Halt < Intcode
+    self.code = 99
+    self.param_count = 0
+
     def exec
       throw :halt
     end
   end
 
-  class BinaryWithDestination < Intcode
-    private
-    def lft ; stack[pc + 1] ; end
-    def rgt ; stack[pc + 2] ; end
-    def dst ; stack[pc + 3] ; end
-  end
+  class Add < Intcode
+    self.code = 1
+    self.param_count = 3
 
-  class Add < BinaryWithDestination
     def exec
-      a, b = stack[lft], stack[rgt]
-      stack[dst] = a + b
+      stack[param(3)] = value(1) + value(2)
     end
   end
 
-  class Multiply < BinaryWithDestination
+  class Multiply < Intcode
+    self.code = 2
+    self.param_count = 3
+
     def exec
-      a, b = stack[lft], stack[rgt]
-      stack[dst] = a * b
+      stack[param(3)] = value(1) * value(2)
     end
   end
 
   class Input < Intcode
+    self.code = 3
+    self.param_count = 1
+
     def exec
-      ptr = stack[pc+1]
-      stack[ptr] = input.shift
+      stack[param(1)] = input.shift
     end
 
     def instruction_length
@@ -38,9 +40,11 @@ class IntcodeComputer
   end
 
   class Output < Intcode
+    self.code = 4
+    self.param_count = 1
+
     def exec
-      ptr = stack[pc+1]
-      output << stack[ptr]
+      output << value(1)
     end
 
     def instruction_length
