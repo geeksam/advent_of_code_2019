@@ -19,8 +19,7 @@ class IntcodeComputer
     self.pc = 0
     catch :halt do
       loop do
-        int = stack[pc]
-        self.pc = Intcode.execute(int, stack, pc)
+        self.pc = Intcode.execute(stack, pc)
       end
     end
   end
