@@ -8,9 +8,4 @@ module ShipComputer
     computer.execute
     computer.listing
   end
-
-  def execute_stack(stack)
-    computer = IntcodeComputer.from_stack(stack)
-    computer.execute
-  end
 end

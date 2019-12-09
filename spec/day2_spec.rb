@@ -71,7 +71,7 @@ RSpec.describe 'a ship computer' do
     stack = original_stack.dup
     stack[1] = 12
     stack[2] = 2
-    ShipComputer.execute_stack(stack)
+    IntcodeComputer.new(stack).execute
     expect( stack[0] ).to eq( 10566835 )
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'a ship computer' do
   #       stack = original_stack.dup
   #       stack[1] = noun
   #       stack[2] = verb
-  #       ShipComputer.execute_stack(stack)
+  #       IntcodeComputer.new(stack).execute
   #       if stack[0] == target_output
   #         candidates << [ noun, verb ]
   #       end
@@ -99,7 +99,7 @@ RSpec.describe 'a ship computer' do
     stack = original_stack.dup
     stack[1] = 23
     stack[2] = 47
-    ShipComputer.execute_stack(stack)
+    IntcodeComputer.new(stack).execute
     expect( stack[0] ).to eq( 19690720 )
   end
 end
