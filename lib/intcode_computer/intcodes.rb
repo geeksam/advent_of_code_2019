@@ -33,10 +33,6 @@ class IntcodeComputer
     def exec
       stack[param(1)] = input.shift
     end
-
-    def instruction_length
-      2
-    end
   end
 
   class Output < Intcode
@@ -45,10 +41,6 @@ class IntcodeComputer
 
     def exec
       output << value(1)
-    end
-
-    def instruction_length
-      2
     end
   end
 end

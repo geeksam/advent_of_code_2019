@@ -35,4 +35,13 @@ RSpec.describe "IntcodeComputer, day five" do
     expect( io[:output].last ).to eq( 13087969 )
   end
 
+  specify "various param counts" do
+    whatever = [ nil ] * 5
+    ic = IntcodeComputer::Halt.new(*whatever)     ; expect( ic.param_count ).to eq( 0 ) ; expect( ic.instruction_length ).to eq( 1 )
+    ic = IntcodeComputer::Add.new(*whatever)      ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
+    ic = IntcodeComputer::Multiply.new(*whatever) ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
+    ic = IntcodeComputer::Input.new(*whatever)    ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
+    ic = IntcodeComputer::Output.new(*whatever)   ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
+  end
+
 end

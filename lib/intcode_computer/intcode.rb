@@ -16,8 +16,9 @@ class IntcodeComputer
       super
     end
 
-    def self.code            ; @code                  ; end
-    def self.code=(n)        ; @code = n              ; end
+    def self.code     ; @code     ; end
+    def self.code=(n) ; @code = n ; end
+
     def self.param_count     ; @param_count           ; end
     def self.param_count=(n) ; @param_count = n       ; end
     def      param_count     ; self.class.param_count ; end
@@ -39,7 +40,7 @@ class IntcodeComputer
     end
 
     def instruction_length
-      4
+      1 + param_count
     end
 
     # A param is always "a position on the stack frame relative to the program counter"
