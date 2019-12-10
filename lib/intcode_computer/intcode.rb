@@ -68,10 +68,6 @@ class IntcodeComputer
       s
     end
 
-    def debug_param(n)
-      "param #{n} (lit #{param(n)}, val #{value(n)})"
-    end
-
     private
 
     def mode(n)
@@ -83,17 +79,41 @@ class IntcodeComputer
       end
     end
 
+    def consume_input
+      input.shift.tap do |value|
+        debug "consuming input: #{value}"
+      end
+    end
+
+    def write_output(value)
+      debug "outputting #{value}"
+      output << value
+    end
+
+    def set_value(at:, to:)
+      debug "setting position #{at} to #{to}"
+      stack[at] = to
+    end
+
+    def next_instruction
+      new_pc = pc + instruction_length
+      debug "moving to next instruction at #{new_pc}"
+      return new_pc
+    end
+
+    def jump_to(address)
+      debug "jumping to #{address}"
+      return address
+    end
+
     def debug(msg)
       return unless $debug
       prefix = self.class.name.split("::").last
       puts prefix + ": " + msg
     end
 
-    # TODO:  add private methods here for:
-    # - consume input
-    # - write to output
-    # - set value at position X to Y
-    # - next instruction
-    # - jump to
+    def debug_param(n)
+      "param #{n} (lit #{param(n)}, val #{value(n)})"
+    end
   end
 end

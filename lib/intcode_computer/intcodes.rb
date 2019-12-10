@@ -4,9 +4,10 @@ class IntcodeComputer
     self.param_count = 3
 
     def execute
-      debug "add #{debug_param(1)} and #{debug_param(2)} and store result to position #{param(3)}"
-      stack[param(3)] = value(1) + value(2)
-      return pc + instruction_length
+      debug "add #{debug_param(1)} and #{debug_param(2)}"
+      result = value(1) + value(2)
+      set_value at: param(3), to: result
+      next_instruction
     end
   end
 
@@ -15,9 +16,10 @@ class IntcodeComputer
     self.param_count = 3
 
     def execute
-      debug "multiply #{debug_param(1)} and #{debug_param(2)} and store result to position #{param(3)}"
-      stack[param(3)] = value(1) * value(2)
-      return pc + instruction_length
+      debug "multiply #{debug_param(1)} and #{debug_param(2)}"
+      result = value(1) * value(2)
+      set_value at: param(3), to: result
+      next_instruction
     end
   end
 
@@ -26,9 +28,8 @@ class IntcodeComputer
     self.param_count = 1
 
     def execute
-      debug "store input (#{input.first.inspect}) to position #{param(1)}"
-      stack[param(1)] = input.shift
-      return pc + instruction_length
+      set_value at: param(1), to: consume_input
+      next_instruction
     end
   end
 
@@ -37,9 +38,8 @@ class IntcodeComputer
     self.param_count = 1
 
     def execute
-      debug "outputting #{debug_param(1)}"
-      output << value(1)
-      return pc + instruction_length
+      write_output value(1)
+      next_instruction
     end
   end
 
@@ -48,13 +48,11 @@ class IntcodeComputer
     self.param_count = 2
 
     def execute
-      debug "Checking if #{debug_param(1)} is NON-ZERO"
+      debug "checking if #{debug_param(1)} is NON-ZERO"
       if value(1).zero?
-        debug "continuing normally"
-        return pc + instruction_length
+        next_instruction
       else
-        debug "jumping to #{debug_param(2)}"
-        return value(2)
+        jump_to value(2)
       end
     end
   end
@@ -64,13 +62,11 @@ class IntcodeComputer
     self.param_count = 2
 
     def execute
-      debug "Checking if #{debug_param(1)} is ZERO"
+      debug "checking if #{debug_param(1)} is ZERO"
       if value(1).zero?
-        debug "jumping to #{debug_param(2)}"
-        return value(2)
+        jump_to value(2)
       else
-        debug "continuing normally"
-        return pc + instruction_length
+        next_instruction
       end
     end
   end
@@ -80,11 +76,10 @@ class IntcodeComputer
     self.param_count = 3
 
     def execute
-      debug "Checking if #{debug_param(1)} < #{debug_param(2)}"
+      debug "checking if #{debug_param(1)} < #{debug_param(2)}"
       result = value(1) < value(2) ? 1 : 0
-      debug "storing #{result} to position ##{param(3)}"
-      stack[param(3)] = result
-      return pc + instruction_length
+      set_value at: param(3), to: result
+      next_instruction
     end
   end
 
@@ -93,11 +88,10 @@ class IntcodeComputer
     self.param_count = 3
 
     def execute
-      debug "Checking if #{debug_param(1)} < #{debug_param(2)}"
+      debug "checking if #{debug_param(1)} < #{debug_param(2)}"
       result = value(1) == value(2) ? 1 : 0
-      debug "storing #{result} to position ##{param(3)}"
-      stack[param(3)] = result
-      return pc + instruction_length
+      set_value at: param(3), to: result
+      next_instruction
     end
   end
 
