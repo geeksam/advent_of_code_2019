@@ -49,9 +49,10 @@ class IntcodeComputer
 
     # A value is some interpretation of a param, depending on the intcode's "mode" (position or immediate)
     def value(n)
+      cell = param(n)
       case mode(n)
-      when :position  ; stack[ param(n) ]
-      when :immediate ; param(n)
+      when :position  ; fail "Y U NIL, #{n}? #{stack[pc, self.class.param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
+      when :immediate ; cell
       else            ; fail "IDKWTFLOL"
       end
     end
@@ -69,7 +70,7 @@ class IntcodeComputer
     private
 
     def mode(n)
-      s = "%05d" % intcode
+      s = ("%05d" % intcode)[0..2].reverse
       case s[n-1]
       when "0" ; :position
       when "1" ; :immediate

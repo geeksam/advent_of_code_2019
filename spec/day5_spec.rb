@@ -21,4 +21,17 @@ RSpec.describe "IntcodeComputer, day five" do
   specify "example program including parameter modes" do
     expect( IntcodeComputer.execute_listing("1002,4,3,4,33") ).to eq( "1002,4,3,4,99" )
   end
+
+  specify "example program using negative values" do
+    expect( IntcodeComputer.execute_listing("1101,100,-1,4,0") ).to eq( "1101,100,-1,4,99" )
+  end
+
+  let(:listing) {
+    File.read( Pathname.new(File.dirname(__FILE__)).join("day5_listing.txt") )
+  }
+  specify "day five part one" do
+    io = { input: [1], output: [] }
+    IntcodeComputer.execute_listing(listing, **io)
+    expect( io[:output].last ).to eq( 13087969 )
+  end
 end
