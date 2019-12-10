@@ -1,12 +1,12 @@
 class IntcodeComputer
   class Intcode
-    def self.execute(stack, pc, input, output)
+    def self.for(stack, pc, input, output)
       intcode = stack[pc]
       klass = SUBCLASSES.detect { |e| e.accepts?(intcode) }
       if klass.nil?
         fail ArgumentError, "UNrecognized int code #{intcode} at position #{pc} of stack #{stack.join(",")}"
       end
-      klass.new(intcode, stack, pc, input, output).execute
+      klass.new(intcode, stack, pc, input, output)
     end
 
     SUBCLASSES = []
