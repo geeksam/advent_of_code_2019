@@ -39,7 +39,7 @@ class IntcodeComputer
 
   def debug_state(intcode)
     return unless $debug
-    puts "\nPC: #{pc}\nStack: #{stack.inspect}\n#{intcode.inspect}"
+    puts "\nPC: #{pc} (value: #{stack[pc]})\nStack: #{stack.inspect}\n#{intcode.inspect}"
   end
 
 end

@@ -59,10 +59,9 @@ class IntcodeComputer
     end
 
     def inspect
-      s = "<#{self.class}"
+      s = "<#{intcode.class}"
       param_count.times do |i|
-        s << " (P#{i+1} ="
-        s << " #{param(i+1)} -> value #{value(i+1)})"
+        s << " #{debug_param(i + 1)}"
       end
       s << ">"
       s
@@ -91,14 +90,13 @@ class IntcodeComputer
     end
 
     def set_value(at:, to:)
-      debug "setting position #{at} to #{to}"
+      debug "setting position #{at} (currently #{stack[at]}) to #{to}"
       stack[at] = to
     end
 
     def next_instruction
-      new_pc = pc + instruction_length
-      debug "moving to next instruction at #{new_pc}"
-      return new_pc
+      debug "next instruction"
+      return pc + instruction_length
     end
 
     def jump_to(address)
@@ -113,7 +111,16 @@ class IntcodeComputer
     end
 
     def debug_param(n)
-      "param #{n} (lit #{param(n)}, val #{value(n)})"
+      s = "(p#{n}: "
+      case mode(n)
+      when :position
+        s << "*#{param(n)} -> #{value(n)}"
+      when :immediate
+        s << "#{param(n)}"
+      end
+      s << ")"
+      s
     end
   end
 end
+
