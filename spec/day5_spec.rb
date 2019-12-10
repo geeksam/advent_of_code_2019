@@ -44,4 +44,88 @@ RSpec.describe "IntcodeComputer, day five" do
     ic = IntcodeComputer::Output.new(*whatever)   ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
   end
 
+  specify "example programs that compare input to 8" do
+    foo = "3,9,8,9,10,9,4,9,99,-1,8"
+    io = { input: [42], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+
+    foo = "3,9,7,9,10,9,4,9,99,-1,8"
+    io = { input: [7], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+
+    foo = "3,3,1108,-1,8,3,4,3,99"
+    io = { input: [42], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+
+    foo = "3,3,1107,-1,8,3,4,3,99"
+    io = { input: [7], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+  end
+
+  specify "example programs that output 0 if input is 0, 1 otherwise" do
+    foo = "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9"
+
+    io = { input: [42], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+
+    io = { input: [0], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+
+    foo = "3,3,1105,-1,9,1101,0,0,12,4,12,99,1"
+
+    io = { input: [42], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1] )
+
+    io = { input: [0], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [0] )
+  end
+
+  specify "a larger example program" do
+    foo = "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+
+    io = { input: [7], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [999] )
+
+    io = { input: [8], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1000] )
+
+    io = { input: [9], output: [] }
+    IntcodeComputer.execute_listing(foo, **io)
+    expect( io[:output] ).to eq( [1001] )
+  end
+
+  specify "day five part two" do
+    io = { input: [5], output: [] }
+    IntcodeComputer.execute_listing(listing, **io)
+    expect( io[:output].last ).to eq( 14110739 )
+  end
+
 end

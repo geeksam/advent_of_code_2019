@@ -35,8 +35,7 @@ class IntcodeComputer
     end
 
     def execute
-      exec
-      return pc + instruction_length
+      fail "Subclass responsibility!"
     end
 
     def instruction_length
@@ -69,6 +68,10 @@ class IntcodeComputer
       s
     end
 
+    def debug_param(n)
+      "param #{n} (lit #{param(n)}, val #{value(n)})"
+    end
+
     private
 
     def mode(n)
@@ -80,8 +83,17 @@ class IntcodeComputer
       end
     end
 
-    def exec
-      fail "Subclass responsibility!"
+    def debug(msg)
+      return unless $debug
+      prefix = self.class.name.split("::").last
+      puts prefix + ": " + msg
     end
+
+    # TODO:  add private methods here for:
+    # - consume input
+    # - write to output
+    # - set value at position X to Y
+    # - next instruction
+    # - jump to
   end
 end

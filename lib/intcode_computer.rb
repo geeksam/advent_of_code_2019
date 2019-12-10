@@ -25,7 +25,9 @@ class IntcodeComputer
   def execute(input = [], output = [])
     self.pc = 0
     catch :halt do
+      puts "", "-" * 5 if $debug
       loop do
+        debug_state
         self.pc = Intcode.execute(stack, pc, input, output)
       end
     end
@@ -33,5 +35,10 @@ class IntcodeComputer
 
   protected
   attr_accessor :pc
+
+  def debug_state
+    return unless $debug
+    puts "\nPC: #{pc}\nStack: #{stack.inspect}\n"
+  end
 
 end
