@@ -16,10 +16,11 @@ class IntcodeComputer
       super
     end
 
-    def self.code            ; @code            ; end
-    def self.code=(n)        ; @code = n        ; end
-    def self.param_count     ; @param_count     ; end
-    def self.param_count=(n) ; @param_count = n ; end
+    def self.code            ; @code                  ; end
+    def self.code=(n)        ; @code = n              ; end
+    def self.param_count     ; @param_count           ; end
+    def self.param_count=(n) ; @param_count = n       ; end
+    def      param_count     ; self.class.param_count ; end
 
     def self.accepts?(intcode)
       intcode % 100 == code
@@ -43,7 +44,7 @@ class IntcodeComputer
 
     # A param is always "a position on the stack frame relative to the program counter"
     def param(n)
-      fail IndexError, "can't get param #{n} of #{self.class.param_count}" if n > self.class.param_count
+      fail IndexError, "can't get param #{n} of #{param_count}" if n > param_count
       stack[ pc + n ]
     end
 
@@ -51,7 +52,7 @@ class IntcodeComputer
     def value(n)
       cell = param(n)
       case mode(n)
-      when :position  ; fail "Y U NIL, #{n}? #{stack[pc, self.class.param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
+      when :position  ; fail "Y U NIL, #{n}? #{stack[pc, param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
       when :immediate ; cell
       else            ; fail "IDKWTFLOL"
       end
@@ -59,7 +60,7 @@ class IntcodeComputer
 
     def inspect
       s = "<#{self.class}"
-      self.class.param_count.times do |i|
+      param_count.times do |i|
         s << " (P#{i+1} ="
         s << " #{param(i+1)} -> value #{value(i+1)})"
       end

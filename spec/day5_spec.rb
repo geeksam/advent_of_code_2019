@@ -34,4 +34,5 @@ RSpec.describe "IntcodeComputer, day five" do
     IntcodeComputer.execute_listing(listing, **io)
     expect( io[:output].last ).to eq( 13087969 )
   end
+
 end
