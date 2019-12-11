@@ -53,7 +53,7 @@ class IntcodeComputer
     def value(n)
       cell = param(n)
       case mode(n)
-      when :position  ; fail "Y U NIL, #{n}? #{stack[pc, param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
+      when :position  ; fail "Y U NIL, p#{n}? #{stack[pc, param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
       when :immediate ; cell
       else            ; fail "IDKWTFLOL"
       end
