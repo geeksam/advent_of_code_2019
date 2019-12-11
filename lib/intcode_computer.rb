@@ -18,12 +18,11 @@ class IntcodeComputer
     new(stack_from_listing(listing))
   end
 
-  attr_reader :stack, :pc
-  attr_accessor :input, :output
+  attr_reader :stack
+  attr_accessor :pc, :input, :output, :relative_base
   def initialize(stack, input = [], output = [])
-    @pc     = 0
-    @input  = input
-    @output = output
+    @pc, @relative_base = 0, 0
+    @input, @output = input, output
     @stack = IntcodeComputer::Stack.new(stack)
   end
 
@@ -44,10 +43,6 @@ class IntcodeComputer
 
   def intcode
     stack[pc]
-  end
-
-  def pc=(new_pc)
-    @pc = new_pc
   end
 
   protected

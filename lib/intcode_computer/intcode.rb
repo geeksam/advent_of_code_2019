@@ -30,7 +30,7 @@ class IntcodeComputer
 
     extend Forwardable
     attr_reader :computer
-    def_delegators :computer, *%i[ intcode stack pc input output ]
+    def_delegators :computer, *%i[ intcode stack pc input output relative_base ]
     def initialize(computer)
       @computer = computer
     end
@@ -53,8 +53,9 @@ class IntcodeComputer
     def value(n)
       cell = param(n)
       case mode(n)
-      when :position  ; fail "Y U NIL, p#{n}? #{stack[pc, param_count+1].inspect}" if stack[cell].nil?; stack[ cell ]
+      when :position  ; stack[ cell ]
       when :immediate ; cell
+      when :relative  ; stack[ relative_base + param(n) ]
       else            ; fail "IDKWTFLOL"
       end
     end
@@ -75,6 +76,7 @@ class IntcodeComputer
       case s[n-1]
       when "0" ; :position
       when "1" ; :immediate
+      when "2" ; :relative
       else ; fail "IDKWTFLOL"
       end
     end
@@ -93,6 +95,11 @@ class IntcodeComputer
     def set_value(at:, to:)
       debug "setting position #{at} (currently #{stack[at]}) to #{to}"
       stack[at] = to
+    end
+
+    def adjust_relative_base(offset)
+      debug "adjusting relative base (currently #{relative_base}) by #{value(1)}"
+      computer.relative_base += offset
     end
 
     def next_instruction
@@ -118,6 +125,8 @@ class IntcodeComputer
         s << "*#{param(n)} -> #{value(n)}"
       when :immediate
         s << "#{param(n)}"
+      when :relative
+        s << "[#{relative_base}+#{param(n)}=#{relative_base + param(n)}]"
       end
       s << ")"
       s

@@ -6,7 +6,11 @@ class IntcodeComputer
     def execute
       debug "add #{debug_param(1)} and #{debug_param(2)}"
       result = value(1) + value(2)
-      set_value at: param(3), to: result
+      case mode(3)
+      when :position  ; set_value at: param(3), to: result
+      when :immediate ; fail "can't write in immediate mode (see day 5)"
+      when :relative  ; set_value at: relative_base + param(3), to: result
+      end
       next_instruction
     end
   end
@@ -18,7 +22,11 @@ class IntcodeComputer
     def execute
       debug "multiply #{debug_param(1)} and #{debug_param(2)}"
       result = value(1) * value(2)
-      set_value at: param(3), to: result
+      case mode(3)
+      when :position  ; set_value at: param(3), to: result
+      when :immediate ; fail "can't write in immediate mode (see day 5)"
+      when :relative  ; set_value at: relative_base + param(3), to: result
+      end
       next_instruction
     end
   end
@@ -28,7 +36,11 @@ class IntcodeComputer
     self.param_count = 1
 
     def execute
-      set_value at: param(1), to: consume_input
+      case mode(1)
+      when :position  ; set_value at: param(1), to: consume_input
+      when :immediate ; fail "can't write in immediate mode (see day 5)"
+      when :relative  ; set_value at: relative_base + param(1), to: consume_input
+      end
       next_instruction
     end
   end
@@ -78,7 +90,11 @@ class IntcodeComputer
     def execute
       debug "checking if #{debug_param(1)} < #{debug_param(2)}"
       result = value(1) < value(2) ? 1 : 0
-      set_value at: param(3), to: result
+      case mode(3)
+      when :position  ; set_value at: param(3), to: result
+      when :immediate ; fail "can't write in immediate mode (see day 5)"
+      when :relative  ; set_value at: relative_base + param(3), to: result
+      end
       next_instruction
     end
   end
@@ -90,7 +106,21 @@ class IntcodeComputer
     def execute
       debug "checking if #{debug_param(1)} < #{debug_param(2)}"
       result = value(1) == value(2) ? 1 : 0
-      set_value at: param(3), to: result
+      case mode(3)
+      when :position  ; set_value at: param(3), to: result
+      when :immediate ; fail "can't write in immediate mode (see day 5)"
+      when :relative  ; set_value at: relative_base + param(3), to: result
+      end
+      next_instruction
+    end
+  end
+
+  class AdjustRelativeBase < Intcode
+    self.code = 9
+    self.param_count = 1
+
+    def execute
+      adjust_relative_base value(1)
       next_instruction
     end
   end
