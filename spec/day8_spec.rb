@@ -4,7 +4,7 @@ require LIB.join("day8")
 RSpec.describe 'space image format' do
   let(:example1) { SIF.new('123456789012', width: 3, height: 2) }
   let(:example2) { SIF.new('0222112222120000', width: 2, height: 2) }
-  let(:puzzle_input) { File.read( Pathname.new(File.dirname(__FILE__)).join("day8-input.txt") ) }
+  let(:puzzle_input) { read_fixture_file("day8-input.txt") }
   let(:puzzle_image) { SIF.new(puzzle_input, width: 25, height: 6) }
 
   specify "it knows how many layers it has" do

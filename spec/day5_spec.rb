@@ -26,9 +26,7 @@ RSpec.describe "IntcodeComputer, day five" do
     expect( IntcodeComputer.execute_listing("1101,100,-1,4,0") ).to eq( "1101,100,-1,4,99" )
   end
 
-  let(:listing) {
-    File.read( Pathname.new(File.dirname(__FILE__)).join("day5_listing.txt") )
-  }
+  let(:listing) { read_fixture_file("day5_listing.txt") }
   specify "day five part one" do
     io = { input: [1], output: [] }
     IntcodeComputer.execute_listing(listing, **io)

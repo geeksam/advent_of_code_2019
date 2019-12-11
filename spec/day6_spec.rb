@@ -72,7 +72,7 @@ RSpec.describe 'orbital graphs' do
   end
 
 	describe "actual puzzle" do
-    let(:map_listing) { File.read( Pathname.new(File.dirname(__FILE__)).join("day6-part1.txt") ) }
+    let(:map_listing) { read_fixture_file("day6-part1.txt") }
     let(:map) { OrbitMap.new(map_listing) }
 
     specify "part one: orbit counts" do

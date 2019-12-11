@@ -10,3 +10,11 @@ RSpec.configure do |c|
     $debug = false
   end
 end
+
+def fixture_file(basename)
+  Pathname.new(File.dirname(__FILE__)).join("fixtures", basename)
+end
+def read_fixture_file(basename)
+  filename = fixture_file(basename)
+  File.read(filename)
+end
