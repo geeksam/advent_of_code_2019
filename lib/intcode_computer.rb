@@ -1,3 +1,4 @@
+require_relative 'intcode_computer/stack'
 require_relative 'intcode_computer/intcode'
 require_relative 'intcode_computer/intcodes'
 
@@ -20,10 +21,10 @@ class IntcodeComputer
   attr_reader :stack, :pc
   attr_accessor :input, :output
   def initialize(stack, input = [], output = [])
-    @stack  = stack
     @pc     = 0
     @input  = input
     @output = output
+    @stack = IntcodeComputer::Stack.new(stack)
   end
 
   def listing
