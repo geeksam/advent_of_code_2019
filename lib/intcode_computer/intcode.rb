@@ -1,12 +1,13 @@
+require 'forwardable'
+
 class IntcodeComputer
   class Intcode
-    def self.for(stack, pc, input, output)
-      intcode = stack[pc]
-      klass = SUBCLASSES.detect { |e| e.accepts?(intcode) }
+    def self.for(computer)
+      klass = SUBCLASSES.detect { |e| e.accepts?(computer.intcode) }
       if klass.nil?
-        fail ArgumentError, "UNrecognized int code #{intcode} at position #{pc} of stack #{stack.join(",")}"
+        fail ArgumentError, "Unrecognized int code #{computer.intcode} at position #{computer.pc} of stack #{computer.stack.join(",")}"
       end
-      klass.new(intcode, stack, pc, input, output)
+      klass.new(computer)
     end
 
     SUBCLASSES = []
@@ -27,11 +28,11 @@ class IntcodeComputer
       intcode % 100 == code
     end
 
-    attr_reader :intcode, :stack, :pc, :input, :output
-    def initialize(intcode, stack, pc, input, output)
-      @intcode        = intcode
-      @stack, @pc     = stack, pc
-      @input, @output = input, output
+    extend Forwardable
+    attr_reader :computer
+    def_delegators :computer, *%i[ intcode stack pc input output ]
+    def initialize(computer)
+      @computer = computer
     end
 
     def execute

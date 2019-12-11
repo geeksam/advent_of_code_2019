@@ -36,12 +36,12 @@ RSpec.describe "IntcodeComputer, day five" do
   end
 
   specify "various param counts" do
-    whatever = [ nil ] * 5
-    ic = IntcodeComputer::Halt.new(*whatever)     ; expect( ic.param_count ).to eq( 0 ) ; expect( ic.instruction_length ).to eq( 1 )
-    ic = IntcodeComputer::Add.new(*whatever)      ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
-    ic = IntcodeComputer::Multiply.new(*whatever) ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
-    ic = IntcodeComputer::Input.new(*whatever)    ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
-    ic = IntcodeComputer::Output.new(*whatever)   ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
+    computer = double("IntcodeComputer")
+    ic = IntcodeComputer::Halt.new(computer)     ; expect( ic.param_count ).to eq( 0 ) ; expect( ic.instruction_length ).to eq( 1 )
+    ic = IntcodeComputer::Add.new(computer)      ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
+    ic = IntcodeComputer::Multiply.new(computer) ; expect( ic.param_count ).to eq( 3 ) ; expect( ic.instruction_length ).to eq( 4 )
+    ic = IntcodeComputer::Input.new(computer)    ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
+    ic = IntcodeComputer::Output.new(computer)   ; expect( ic.param_count ).to eq( 1 ) ; expect( ic.instruction_length ).to eq( 2 )
   end
 
   specify "example programs that compare input to 8" do

@@ -3,39 +3,53 @@ require_relative 'intcode_computer/intcodes'
 
 class IntcodeComputer
   def self.execute_listing(listing, input: [], output: [])
-    computer = from_listing(listing)
-    computer.execute(input, output)
+    stack = stack_from_listing(listing)
+    computer = new(stack, input, output)
+    computer.execute
     computer.listing
   end
 
-  def self.from_listing(listing)
-    stack = listing.split(",").map(&:to_i)
-    new(stack)
+  def self.stack_from_listing(listing)
+    listing.split(",").map(&:to_i)
   end
 
-  attr_reader :stack
-  def initialize(stack)
-    @stack = stack
+  def self.from_listing(listing)
+    new(stack_from_listing(listing))
+  end
+
+  attr_reader :stack, :pc
+  attr_accessor :input, :output
+  def initialize(stack, input = [], output = [])
+    @stack  = stack
+    @pc     = 0
+    @input  = input
+    @output = output
   end
 
   def listing
     stack.join(",")
   end
 
-  def execute(input = [], output = [])
-    self.pc = 0
+  def execute
     catch :halt do
       puts "", "-" * 5 if $debug
       loop do
-        intcode = Intcode.for(stack, pc, input, output)
+        intcode = Intcode.for(self)
         debug_state(intcode)
         self.pc = intcode.execute
       end
     end
   end
 
+  def intcode
+    stack[pc]
+  end
+
+  def pc=(new_pc)
+    @pc = new_pc
+  end
+
   protected
-  attr_accessor :pc
 
   def debug_state(intcode)
     return unless $debug
