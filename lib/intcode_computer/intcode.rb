@@ -60,7 +60,7 @@ class IntcodeComputer
     end
 
     def inspect
-      s = "<#{intcode.class}"
+      s = "<#{self.class}"
       param_count.times do |i|
         s << " #{debug_param(i + 1)}"
       end
