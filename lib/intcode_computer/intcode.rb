@@ -97,12 +97,12 @@ class IntcodeComputer
 
     def next_instruction
       debug "next instruction"
-      return pc + instruction_length
+      computer.pc += instruction_length
     end
 
     def jump_to(address)
       debug "jumping to #{address}"
-      return address
+      computer.pc = address
     end
 
     def debug(msg)

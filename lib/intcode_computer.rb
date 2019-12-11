@@ -36,7 +36,7 @@ class IntcodeComputer
       loop do
         intcode = Intcode.for(self)
         debug_state(intcode)
-        self.pc = intcode.execute
+        intcode.execute
       end
     end
   end
