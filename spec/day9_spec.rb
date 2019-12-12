@@ -24,10 +24,17 @@ RSpec.describe "IntcodeComputer, day nine" do
     expect( io[:output] ).to eq( [1_125_899_906_842_624] )
   end
 
-  specify "part one" do
-    listing = read_fixture_file("day9-input.txt")
-    io = { input: [1], output: [] }
-    IntcodeComputer.execute_listing(listing, **io)
-    expect( io[:output] ).to eq( [3_100_786_347] )
-  end
+  # specify "part one" do
+  #   listing = read_fixture_file("day9-input.txt")
+  #   io = { input: [1], output: [] }
+  #   IntcodeComputer.execute_listing(listing, **io)
+  #   expect( io[:output] ).to eq( [3_100_786_347] )
+  # end
+  #
+  # specify "part two" do
+  #   listing = read_fixture_file("day9-input.txt")
+  #   io = { input: [2], output: [] }
+  #   IntcodeComputer.execute_listing(listing, **io)
+  #   expect( io[:output] ).to eq( [87023] )
+  # end
 end
