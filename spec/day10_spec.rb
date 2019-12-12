@@ -1,0 +1,213 @@
+require 'spec_helper'
+require LIB.join("day10")
+
+RSpec.describe "asteroids" do
+  describe "smallest map" do
+    let(:map_text) {
+      <<~EOF.strip
+        .#..#
+        .....
+        #####
+        ....#
+        ...##
+      EOF
+    }
+    subject(:map) { AsteroidMap.from_text(map_text) }
+    let(:p1) { Point(1,0) } ; let(:p2) { Point(4,0) } ; let(:p3) { Point(4,3) }
+    let(:a1) { map[p1] }    ; let(:a2) { map[p2] }    ; let(:a3) { map[p3] }
+
+    it "knows where the asteroids are and aren't" do
+      expect( map[ Point(0,0) ] ).to be nil
+      expect( map[ Point(1,0) ] ).to be_kind_of( Asteroid )
+    end
+
+    it "knows all the points on a line between two arbitrary points" do
+      points = map.points_between( Point(0,0), Point(4,0) )
+      expect( points ).to eq( [ Point(1,0), Point(2,0), Point(3,0) ] )
+
+      points = map.points_between( Point(0,0), Point(4,4) )
+      expect( points ).to eq( [ Point(1,1), Point(2,2), Point(3,3) ] )
+
+      points = map.points_between( Point(0,0), Point(4,2) )
+      expect( points ).to eq( [ Point(2,1) ] )
+    end
+
+    it "knows all the objects between two arbitrary points" do
+      a, b = Point(4,0), Point(4,4)
+      objects = map.objects_between(a, b)
+      expect( objects.length ).to eq( 2 )
+      expect( objects.all? { |e| e.kind_of?(Asteroid) } ).to be true
+      expect( objects.map(&:point).sort ).to eq( [ Point(4,2), Point(4,3) ] )
+    end
+
+    specify "two asteroids can see each other iff there are no other asteroids at any of the points between them" do
+      #       .1..2   1 & 2 can see each other
+      #       .....
+      #       #####
+      #       ....3   neither can see 3
+      #       ...##
+      p1, p2, p3 = Point(1,0), Point(4,0), Point(4,3)
+      a1, a2, a3 = map[p1], map[p2], map[p3]
+      expect( a1.can_see?(a2) ).to be true  ; expect( a2.can_see?(a1) ).to be true
+      expect( a1.can_see?(a3) ).to be false ; expect( a3.can_see?(a1) ).to be false
+      expect( a2.can_see?(a3) ).to be false ; expect( a3.can_see?(a2) ).to be false
+    end
+
+    specify "num_asteroids_detectable_from" do
+      expect( map.num_asteroids_detectable_from( Point(1,0) ) ).to eq( 7 )
+      expect( map.num_asteroids_detectable_from( Point(0,2) ) ).to eq( 6 )
+      expect( map.num_asteroids_detectable_from( Point(4,2) ) ).to eq( 5 )
+    end
+
+    specify "optimal_monitoring_location" do
+      point, score = map.optimal_monitoring_location
+      expect( point ).to eq( Point(3,4) )
+      expect( score ).to eq( 8 )
+    end
+  end
+
+  describe "other maps" do
+    let(:map2_text) {
+      <<~EOF.strip
+        ......#.#.
+        #..#.#....
+        ..#######.
+        .#.#.###..
+        .#..#.....
+        ..#....#.#
+        #..#....#.
+        .##.#..###
+        ##...#..#.
+        .#....####
+      EOF
+    }
+    let(:map3_text) {
+      <<~EOF.strip
+				#.#...#.#.
+				.###....#.
+				.#....#...
+				##.#.#.#.#
+				....#.#.#.
+				.##..###.#
+				..#...##..
+				..##....##
+				......#...
+				.####.###.
+      EOF
+    }
+    let(:map4_text) {
+      <<~EOF.strip
+				.#..#..###
+				####.###.#
+				....###.#.
+				..###.##.#
+				##.##.#.#.
+				....###..#
+				..#.#..#.#
+				#..#.#.###
+				.##...##.#
+				.....#.#..
+      EOF
+    }
+    let(:map5_text) {
+      <<~EOF.strip
+        .#..##.###...#######
+        ##.############..##.
+        .#.######.########.#
+        .###.#######.####.#.
+        #####.##.#.##.###.##
+        ..#####..#.#########
+        ####################
+        #.####....###.#.#.##
+        ##.#################
+        #####.##.###..####..
+        ..######..##.#######
+        ####.##.####...##..#
+        .#####..#.######.###
+        ##...#.##########...
+        #.##########.#######
+        .####.#.###.###.#.##
+        ....##.##.###..#####
+        .#.#.###########.###
+        #.#.#.#####.####.###
+        ###.##.####.##.#..##
+      EOF
+    }
+    subject(:map2) { AsteroidMap.from_text(map2_text) }
+    subject(:map3) { AsteroidMap.from_text(map3_text) }
+    subject(:map4) { AsteroidMap.from_text(map4_text) }
+    subject(:map5) { AsteroidMap.from_text(map5_text) }
+
+    specify "map 2 optimal_monitoring_location" do
+      point, score = map2.optimal_monitoring_location
+      expect( point ).to eq( Point(5,8) )
+      expect( score ).to eq( 33 )
+    end
+
+    specify "map 3 optimal_monitoring_location" do
+      point, score = map3.optimal_monitoring_location
+      expect( point ).to eq( Point(1,2) )
+      expect( score ).to eq( 35 )
+    end
+
+    specify "map 4 optimal_monitoring_location" do
+      point, score = map4.optimal_monitoring_location
+      expect( point ).to eq( Point(6,3) )
+      expect( score ).to eq( 41 )
+    end
+
+    # specify "map 5 optimal_monitoring_location" do
+    #   point, score = map5.optimal_monitoring_location
+    #   expect( point ).to eq( Point(11,13) )
+    #   expect( score ).to eq( 210 )
+    # end
+  end
+
+  describe "part one" do
+    let(:puzzle_input) {
+      <<~EOF.strip
+        #....#.....#...#.#.....#.#..#....#
+        #..#..##...#......#.....#..###.#.#
+        #......#.#.#.....##....#.#.....#..
+        ..#.#...#.......#.##..#...........
+        .##..#...##......##.#.#...........
+        .....#.#..##...#..##.....#...#.##.
+        ....#.##.##.#....###.#........####
+        ..#....#..####........##.........#
+        ..#...#......#.#..#..#.#.##......#
+        .............#.#....##.......#...#
+        .#.#..##.#.#.#.#.......#.....#....
+        .....##.###..#.....#.#..###.....##
+        .....#...#.#.#......#.#....##.....
+        ##.#.....#...#....#...#..#....#.#.
+        ..#.............###.#.##....#.#...
+        ..##.#.........#.##.####.........#
+        ##.#...###....#..#...###..##..#..#
+        .........#.#.....#........#.......
+        #.......#..#.#.#..##.....#.#.....#
+        ..#....#....#.#.##......#..#.###..
+        ......##.##.##...#...##.#...###...
+        .#.....#...#........#....#.###....
+        .#.#.#..#............#..........#.
+        ..##.....#....#....##..#.#.......#
+        ..##.....#.#......................
+        .#..#...#....#.#.....#.........#..
+        ........#.............#.#.........
+        #...#.#......#.##....#...#.#.#...#
+        .#.....#.#.....#.....#.#.##......#
+        ..##....#.....#.....#....#.##..#..
+        #..###.#.#....#......#...#........
+        ..#......#..#....##...#.#.#...#..#
+        .#.##.#.#.....#..#..#........##...
+        ....#...##.##.##......#..#..##....
+      EOF
+    }
+    subject(:part_one) { AsteroidMap.from_text(puzzle_input) }
+
+    # specify "solution" do
+    #   point, score = part_one.optimal_monitoring_location
+    #   expect( point ).to eq( Point(26,28) )
+    #   expect( score ).to eq( 267 )
+    # end
+  end
+end
