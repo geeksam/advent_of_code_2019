@@ -163,51 +163,116 @@ RSpec.describe "asteroids" do
     # end
   end
 
+  let(:puzzle_input) {
+    <<~EOF.strip
+      #....#.....#...#.#.....#.#..#....#
+      #..#..##...#......#.....#..###.#.#
+      #......#.#.#.....##....#.#.....#..
+      ..#.#...#.......#.##..#...........
+      .##..#...##......##.#.#...........
+      .....#.#..##...#..##.....#...#.##.
+      ....#.##.##.#....###.#........####
+      ..#....#..####........##.........#
+      ..#...#......#.#..#..#.#.##......#
+      .............#.#....##.......#...#
+      .#.#..##.#.#.#.#.......#.....#....
+      .....##.###..#.....#.#..###.....##
+      .....#...#.#.#......#.#....##.....
+      ##.#.....#...#....#...#..#....#.#.
+      ..#.............###.#.##....#.#...
+      ..##.#.........#.##.####.........#
+      ##.#...###....#..#...###..##..#..#
+      .........#.#.....#........#.......
+      #.......#..#.#.#..##.....#.#.....#
+      ..#....#....#.#.##......#..#.###..
+      ......##.##.##...#...##.#...###...
+      .#.....#...#........#....#.###....
+      .#.#.#..#............#..........#.
+      ..##.....#....#....##..#.#.......#
+      ..##.....#.#......................
+      .#..#...#....#.#.....#.........#..
+      ........#.............#.#.........
+      #...#.#......#.##....#...#.#.#...#
+      .#.....#.#.....#.....#.#.##......#
+      ..##....#.....#.....#....#.##..#..
+      #..###.#.#....#......#...#........
+      ..#......#..#....##...#.#.#...#..#
+      .#.##.#.#.....#..#..#........##...
+      ....#...##.##.##......#..#..##....
+    EOF
+  }
+  subject(:puzzle_map) { AsteroidMap.from_text(puzzle_input) }
   describe "part one" do
-    let(:puzzle_input) {
-      <<~EOF.strip
-        #....#.....#...#.#.....#.#..#....#
-        #..#..##...#......#.....#..###.#.#
-        #......#.#.#.....##....#.#.....#..
-        ..#.#...#.......#.##..#...........
-        .##..#...##......##.#.#...........
-        .....#.#..##...#..##.....#...#.##.
-        ....#.##.##.#....###.#........####
-        ..#....#..####........##.........#
-        ..#...#......#.#..#..#.#.##......#
-        .............#.#....##.......#...#
-        .#.#..##.#.#.#.#.......#.....#....
-        .....##.###..#.....#.#..###.....##
-        .....#...#.#.#......#.#....##.....
-        ##.#.....#...#....#...#..#....#.#.
-        ..#.............###.#.##....#.#...
-        ..##.#.........#.##.####.........#
-        ##.#...###....#..#...###..##..#..#
-        .........#.#.....#........#.......
-        #.......#..#.#.#..##.....#.#.....#
-        ..#....#....#.#.##......#..#.###..
-        ......##.##.##...#...##.#...###...
-        .#.....#...#........#....#.###....
-        .#.#.#..#............#..........#.
-        ..##.....#....#....##..#.#.......#
-        ..##.....#.#......................
-        .#..#...#....#.#.....#.........#..
-        ........#.............#.#.........
-        #...#.#......#.##....#...#.#.#...#
-        .#.....#.#.....#.....#.#.##......#
-        ..##....#.....#.....#....#.##..#..
-        #..###.#.#....#......#...#........
-        ..#......#..#....##...#.#.#...#..#
-        .#.##.#.#.....#..#..#........##...
-        ....#...##.##.##......#..#..##....
-      EOF
-    }
-    subject(:part_one) { AsteroidMap.from_text(puzzle_input) }
 
     # specify "solution" do
-    #   point, score = part_one.optimal_monitoring_location
+    #   point, score = puzzle_map.optimal_monitoring_location
     #   expect( point ).to eq( Point(26,28) )
     #   expect( score ).to eq( 267 )
+    # end
+  end
+
+  describe "part two" do
+    specify "a Point can convert itself to polar coordinates relative to an arbitrary origin" do
+      nw = Point(0,  0) ; n = Point(5,  0) ; ne = Point(10,  0)
+      w  = Point(0,  5) ; x = Point(5,  5) ; e  = Point(10,  5)
+      sw = Point(0, 10) ; s = Point(5, 10) ; se = Point(10, 10)
+
+      r = Math.sqrt( 5**2 + 5**2 ).round(3)
+      expect( n .to_polar(x) ).to eq( Polar( 90,  5 ) )
+      expect( ne.to_polar(x) ).to eq( Polar( 45,  r ) )
+      expect( e .to_polar(x) ).to eq( Polar( 0,   5 ) )
+      expect( se.to_polar(x) ).to eq( Polar( 315, r ) )
+      expect( s .to_polar(x) ).to eq( Polar( 270, 5 ) )
+      expect( sw.to_polar(x) ).to eq( Polar( 225, r ) )
+      expect( w .to_polar(x) ).to eq( Polar( 180, 5 ) )
+      expect( nw.to_polar(x) ).to eq( Polar( 135, r ) )
+    end
+
+    let(:laser_example_text) {
+      <<~EOF
+				.#....#####...#..
+				##...##.#####..##
+				##...#...#.#####.
+				..#.....X...###..
+				..#.#.....#....##
+      EOF
+    }
+    let(:laser_map) { AsteroidMap.from_text(laser_example_text) }
+
+    specify "X marks the spot" do
+      expect( laser_map.polar_origin ).to eq( Point(8,3) )
+    end
+
+    specify "annihilation_queue" do
+      boom = laser_map.annihilation_queue.to_enum
+
+      expect( boom.next ).to eq( Point( 8, 1) )
+      expect( boom.next ).to eq( Point( 9, 0) )
+      expect( boom.next ).to eq( Point( 9, 1) )
+      expect( boom.next ).to eq( Point(10, 0) )
+      expect( boom.next ).to eq( Point( 9, 2) )
+      expect( boom.next ).to eq( Point(11, 1) )
+      expect( boom.next ).to eq( Point(12, 1) )
+      expect( boom.next ).to eq( Point(11, 2) )
+      expect( boom.next ).to eq( Point(15, 1) )
+
+      expect( boom.next ).to eq( Point(12, 2) )
+      expect( boom.next ).to eq( Point(13, 2) )
+      expect( boom.next ).to eq( Point(14, 2) )
+      expect( boom.next ).to eq( Point(15, 2) )
+      expect( boom.next ).to eq( Point(12, 3) )
+      expect( boom.next ).to eq( Point(16, 4) )
+      expect( boom.next ).to eq( Point(15, 4) )
+      expect( boom.next ).to eq( Point(10, 4) )
+      expect( boom.next ).to eq( Point( 4, 4) )
+    end
+
+    # specify "solution" do
+    #   laser = Point(26,28)
+    #   puzzle_map.polar_origin = laser
+    #   boom = puzzle_map.annihilation_queue.to_enum
+    #   199.times { boom.next }
+    #   expect( boom.next ).to eq( Point(13,9) )
     # end
   end
 end

@@ -1,94 +1,24 @@
 require 'forwardable'
-
-class Point
-  attr_reader :x, :y
-  def initialize(x, y)
-    @x, @y = x, y
-  end
-
-  def inspect
-    "(#{x}, #{y})"
-  end
-
-  def +(other)
-    self.class.new( x + other.x, y + other.y )
-  end
-
-  def ==(other)
-    [ x, y ] == [ other.x, other.y ]
-  end
-  alias :eql? :==
-
-  def hash
-    [ x, y ].hash
-  end
-
-  def <=>(other)
-    [ x, y ] <=> [ other.x, other.y ]
-  end
-
-  def slope_to(other)
-    a, b = *([ self, other ].sort)
-
-    case
-    when a.x == b.x # vertical line
-      rise, run = 1, 0
-    when a.y == b.y # horizontal line
-      rise, run = 0, 1
-    else # non-zero slope
-      m = Rational( b.y - a.y, b.x - a.x )
-      rise, run = m.numerator, m.denominator
-    end
-    Point(run, rise)
-  end
-end
-
-def Point(x, y)
-  Point.new(x, y)
-end
-Origin = Point(0, 0)
-
-class Asteroid
-  attr_reader :map, :point
-  def initialize(map, point)
-    @map   = map
-    @point = point
-  end
-
-  extend Forwardable
-  def_delegators :point, :x, :y
-
-  def inspect
-    "<Asteroid #{point.inspect})>"
-  end
-
-  def to_point
-    point
-  end
-
-  def <=>(other)
-    self.point <=> other.point
-  end
-
-  def can_see?(other)
-    map.clear_line_of_sight_between?(self.point, other.point)
-  end
-end
+require_relative "day10/point"
+require_relative "day10/polar"
+require_relative "day10/asteroid"
 
 class AsteroidMap
   def self.from_text(text)
     new.tap do |map|
       text.strip.lines.each.with_index do |line, y|
         line.scan(/./).each.with_index do |char, x|
-          if char == '#'
-            point = Point(x,y)
-            map[point] = Asteroid.new(map, point)
+          point = Point(x,y)
+          case char
+          when 'X' ; map.polar_origin = point
+          when '#' ; map[point] = Asteroid.new(map, point)
           end
         end
       end
     end
   end
 
+  attr_accessor :polar_origin
   def initialize
     @roids = {}
   end
@@ -144,5 +74,35 @@ class AsteroidMap
     roids_with_scores = roids.map { |roid| [ roid, num_asteroids_detectable_from(roid.point) ] }
     roid, score = *roids_with_scores.sort_by(&:last).last
     return roid.point, score
+  end
+
+  def annihilation_queue
+    fail "no laser present!" if polar_origin.nil?
+
+    data = Hash.new { |hash, key| hash[key] = [] }
+    @roids.keys.each do |point|
+      polar = point.to_polar(polar_origin)
+      data[polar.theta] << [ polar, point ]
+    end
+    data.values.each(&:sort!) # they're already grouped by theta; this sorts them by radius
+
+    thetas = data.keys.sort
+    thetas.reverse! # going CW instead of CCW
+    q1, rest = thetas.partition { |e| (0..90).cover?(e) }
+    thetas = q1 + rest
+
+    queue = []
+    k = nil
+    loop do
+      thetas.each do |theta|
+        target = data[theta].shift
+        next if target.nil?
+        queue << target.last
+      end
+      break if queue.length == k # made it all the way around without vaporizing anything
+      k = queue.length
+    end
+
+    queue
   end
 end
