@@ -50,6 +50,15 @@ class Point:
     def manhattan_distance(self):
         return math.fabs(self.x) + math.fabs(self.y)
 
+    def points_along(self, vector_string):
+        v = Vector(vector_string)
+        points = []
+        for i in range(0, v.length+1):
+            delta = v.unit() * i
+            p = self + delta
+            points.append(p)
+        return points
+
     def __repr__(self):
         return f"Point({self.x}, {self.y})"
 
@@ -71,15 +80,6 @@ class Point:
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
-
-    def points_along(self, vector_string):
-        v = Vector(vector_string)
-        points = []
-        for i in range(0, v.length+1):
-            delta = v.unit() * i
-            p = self + delta
-            points.append(p)
-        return points
 
     def __hash__(self):
         return hash((self.x, self.y))
@@ -108,10 +108,6 @@ class Path:
             pts.append( pts[-1] + v )
         return pts
 
-    def __repr__(self):
-        tps = map(str, self.turning_points())
-        return " --> ".join(tps)
-
     def steps_to(self, point):
         return self.points().index(point)
 
@@ -120,3 +116,7 @@ class Path:
         ps2 = set( other.points() )
         ints = ps1 & ps2
         return [ x for x in self.points() if x in ints and x != Point(0, 0) ]
+
+    def __repr__(self):
+        tps = map(str, self.turning_points())
+        return " --> ".join(tps)
