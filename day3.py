@@ -47,11 +47,6 @@ class Point:
     def __init__(self, x, y):
         self.x, self.y = x, y
 
-    @classmethod
-    def from_vector(cls, vector):
-        v = Vector(vector)
-        return v.to_point()
-
     def manhattan_distance(self):
         return math.fabs(self.x) + math.fabs(self.y)
 
@@ -64,8 +59,7 @@ class Point:
             y = self.y + other.y
             return self.__class__(x, y)
         if isinstance(other, Vector):
-            p = self.__class__.from_vector(other)
-            return self + p
+            return self + other.to_point()
         raise "IDKWTF"
 
     def __mul__(self, other):
